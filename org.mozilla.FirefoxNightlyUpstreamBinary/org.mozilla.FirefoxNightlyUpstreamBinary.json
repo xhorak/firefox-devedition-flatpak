@@ -1,0 +1,87 @@
+{
+    "app-id": "org.mozilla.FirefoxNightlyUpstreamBinary",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "3.24",
+    "sdk": "org.gnome.Sdk",
+    "command": "firefox",
+    /*"tags": [""],*/
+    "desktop-file-name-suffix": " Nightly Upstream Binary",
+    "rename-desktop-file": "org.mozilla.Firefox.desktop",
+    "rename-appdata-file" : "org.mozilla.Firefox.appdata.xml",
+    "rename-icon" : "org.mozilla.Firefox",
+    "finish-args": [
+        /* X11 + XShm access */
+        "--share=ipc", "--socket=x11",
+        /* We don't want full fs access so we can read the files */
+        /*"--filesystem=home:rw",*/
+        /* Needs to talk to the network: */
+        "--share=network",
+        /* Enable playing sound thru pulseaudio */
+        "--socket=pulseaudio",
+        /* Keep user profile after application exit */
+        "--persist=.mozilla/",
+        /* Allow access to Download folder */
+        "--filesystem=xdg-download:rw"
+    ],
+    "build-options" : {
+        "cflags": "-O2 -g",
+        "cxxflags": "-O2 -g",
+        "env": {
+            "V": "1"
+        }
+    },
+    "cleanup": ["/include", "/lib/pkgconfig",
+                "/share/pkgconfig", "/share/aclocal",
+                "/man", "/share/man", "/share/gtk-doc",
+                "*.la", "*.a"],
+    "modules": [
+      {
+          "name": "firefox",
+          "no-autogen": true,
+          "make-install-args": ["prefix=/app"],
+          "sources": [
+              {
+                  "type": "archive",
+                  "url": "https://download-installer.cdn.mozilla.net/pub/firefox/nightly/latest-mozilla-central/firefox-57.0a1.en-US.linux-x86_64.tar.bz2",
+                  "sha256": "a277cca897a4f51f487f474af7913850cb17d04de7b9f9911012649908081c87",
+                  "dest": "firefox"
+              },
+              {
+                  /* Used for putting upstream build into the right location */
+                  "type": "script",
+                  "commands": ["all:",
+                               "	echo 'Nothing to do'",
+                               "install:",
+                               "	mkdir -p /app/lib/firefox",
+                               "	cp -r firefox $(prefix)/lib",
+                               "	mkdir -p $(prefix)/bin",
+                               "	cp -p firefox.sh $(prefix)/bin/firefox",
+                               "	chmod +x $(prefix)/bin/firefox",
+                               "	mkdir -p $(prefix)/share/appdata",
+                               "	cp -p org.mozilla.Firefox.appdata.xml $(prefix)/share/appdata",
+                               "	desktop-file-install --dir $(prefix)/share/applications org.mozilla.Firefox.desktop",
+                               "	mkdir -p $(prefix)/share/icons/hicolor/128x128/apps/ $(prefix)/share/appdata",
+                               "	cp -p firefox/browser/icons/mozicon128.png $(prefix)/share/icons/hicolor/128x128/apps/org.mozilla.Firefox.png"
+                              ],
+                  "dest-filename": "Makefile"
+              },
+              {
+                  /* Execution script to start Firefox */
+                  "type": "script",
+                  "commands": ["/app/lib/firefox/run-mozilla.sh /app/lib/firefox/firefox $*"],
+                  "dest-filename": "firefox.sh"
+              },
+              {
+                  "type": "file",
+                  "path": "org.mozilla.Firefox.appdata.xml",
+                  "dest": ""
+              },
+              {
+                  "type": "file",
+                  "path": "org.mozilla.Firefox.desktop",
+                  "dest": ""
+              }
+          ]
+      }
+    ]
+}
