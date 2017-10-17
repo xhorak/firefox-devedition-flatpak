@@ -6,7 +6,7 @@
     "sdk": "org.gnome.Sdk",
     "command": "firefox",
     /*"tags": [""],*/
-    "desktop-file-name-suffix": " Nightly - CSD build",
+    "desktop-file-name-suffix": " Nightly – CSD build",
     "rename-desktop-file": "org.mozilla.Firefox.desktop",
     "rename-appdata-file" : "org.mozilla.Firefox.appdata.xml",
     "rename-icon" : "org.mozilla.Firefox",

@@ -2,7 +2,7 @@
 <!-- Copyright 2016 Jiri Eischmann <eischmann@redhat.com> -->
 <application>
   <id type="desktop">org.mozilla.FirefoxNightlyWayland.desktop</id>
-  <name>Firefox Nightly - Wayland build</name>
+  <name>Firefox Nightly – Wayland build</name>
   <summary>Experimental Wayland build of Firefox Nightly</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>MPL-2.0</project_license>
