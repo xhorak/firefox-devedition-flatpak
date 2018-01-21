@@ -1,12 +1,10 @@
-diff -up firefox-4/testing/mozbase/mozlog/setup.py.blessings firefox-4/testing/mozbase/mozlog/setup.py
---- firefox-4/testing/mozbase/mozlog/setup.py.blessings	2017-03-03 10:02:50.826586940 +0100
-+++ firefox-4/testing/mozbase/mozlog/setup.py	2017-03-03 10:02:56.062627745 +0100
-@@ -17,7 +17,7 @@ setup(name=PACKAGE_NAME,
-       license='MPL 1.1/GPL 2.0/LGPL 2.1',
-       packages=find_packages(),
-       zip_safe=False,
--      install_requires=["blessings>=1.3"],
-+      #install_requires=["blessings>=1.3"],
-       tests_require=['mozfile'],
-       platforms=['Any'],
-       classifiers=['Development Status :: 4 - Beta',
+--- firefox-2/testing/mozbase/mozlog/setup.py.old	2018-01-21 15:37:50.570721202 +0200
++++ firefox-2/testing/mozbase/mozlog/setup.py	2018-01-21 15:37:58.513950432 +0200
+@@ -9,7 +9,6 @@ from setuptools import setup, find_packa
+ PACKAGE_NAME = 'mozlog'
+ PACKAGE_VERSION = '3.7'
+ DEPS = [
+-    'blessings>=1.3',
+     'mozterm',
+     'six >= 1.10.0',
+ ]
