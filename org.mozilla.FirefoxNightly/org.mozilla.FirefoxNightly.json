@@ -5,6 +5,16 @@
     "sdk": "org.gnome.Sdk",
     "command": "firefox",
     /*"tags": [""],*/
+    "add-extensions": {
+        "org.mozilla.FirefoxNightly.flashplayer": {
+	    "directory": "lib/mozilla/plugins",
+	    "add-ld-path": "lib",
+	    "merge-dirs": "lib/mozilla/plugins",
+	    "subdirectories": true,
+	    "no-autodownload": true,
+	    "autodelete": true
+	}
+    },
     "desktop-file-name-suffix": " Nightly",
     "rename-desktop-file": "org.mozilla.Firefox.desktop",
     "rename-appdata-file" : "org.mozilla.Firefox.appdata.xml",
@@ -116,7 +126,6 @@
                     "path": "rust-uninstall.patch"
                 }
             ]
-
       },
       {
         "name": "PipeWire",
@@ -132,6 +141,14 @@
                 "path": "pipewire-build.patch"
             }
         ]
+      },
+      {
+	  "name": "plugins",
+          "buildsystem": "simple",
+          "build-commands": [],
+          "post-install": [
+              "install -d /app/lib/mozilla/plugins"
+          ]
       },
       {
           "name": "firefox",
@@ -160,8 +177,12 @@
                   "path": "mozlog-no-blessings-req.patch"
               },
               {
-                "type": "patch",
-                "path": "firefox-pipewire.patch"
+                  "type": "patch",
+                  "path": "firefox-pipewire.patch"
+              },
+              {
+                  "type": "patch",
+                  "path": "firefox-extension-dir.patch"
               },
               {
                   "type": "file",

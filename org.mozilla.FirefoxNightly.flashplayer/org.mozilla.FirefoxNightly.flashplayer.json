@@ -1,0 +1,50 @@
+{
+    "id": "org.mozilla.FirefoxNightly.flashplayer",
+    "runtime": "org.mozilla.FirefoxNightly",
+    "build-extension": true,
+    "sdk": "org.gnome.Sdk//3.26",
+    "separate-locales": false,
+    "appstream-compose": false,
+    "build-options": {
+	"prefix": "/app/lib/mozilla/plugins/",
+	"env": {
+	    "PATH": "/app/lib/mozilla/plugins/bin:/app/bin:/usr/bin"
+        }
+    },
+    "modules": [
+        {	
+	    "name": "flash_player",
+            "buildsystem": "simple",
+            "build-commands": [
+		"mkdir -p flash_player",
+	        "tar xvzf flash_player.tar.gz -C flash_player",
+		"cp flash_player/libflashplayer.so /app/lib/mozilla/plugins",
+		"rm -rf flash_player flash_player.tar.gz"
+	    ],
+	    "sources": [
+                {
+                    "type": "file",
+                    "url": "https://fpdownload.adobe.com/get/flashplayer/pdc/30.0.0.134/flash_player_npapi_linux.x86_64.tar.gz",
+		    "sha256": "dcd7f22d0891803e347d4ffa017ea9cab590bcc7e5b60309e33b7fe254c9610c",
+		    "dest-filename": "flash_player.tar.gz"
+                }
+	    ]
+	},
+	{
+            "name": "appdata",
+            "buildsystem": "simple",
+            "build-commands": [
+                "mkdir -p ${FLATPAK_DEST}/share/appdata",
+                "cp org.mozilla.FirefoxNightly.flashplayer.appdata.xml ${FLATPAK_DEST}/share/appdata",
+                "appstream-compose  --basename=org.mozilla.FirefoxNightly.flashplayer --prefix=${FLATPAK_DEST} --origin=flatpak org.mozilla.FirefoxNightly.flashplayer"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "path": "org.mozilla.FirefoxNightly.flashplayer.appdata.xml"
+                }
+            ]
+        }
+    ]
+}
+
