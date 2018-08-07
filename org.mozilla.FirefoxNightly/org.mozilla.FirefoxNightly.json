@@ -6,14 +6,10 @@
     "command": "firefox",
     /*"tags": [""],*/
     "add-extensions": {
-        "org.mozilla.FirefoxNightly.flashplayer": {
-	    "directory": "lib/mozilla/plugins",
-	    "add-ld-path": "lib",
-	    "merge-dirs": "lib/mozilla/plugins",
-	    "subdirectories": true,
-	    "no-autodownload": true,
-	    "autodelete": true
-	}
+        "com.adobe.FlashPlayer.NPAPI": {
+            "directory": "lib/mozilla/plugins",
+            "autodelete": true
+        }
     },
     "desktop-file-name-suffix": " Nightly",
     "rename-desktop-file": "org.mozilla.Firefox.desktop",
@@ -42,7 +38,9 @@
         "--filesystem=~/.config/dconf:ro",
         "--env=DCONF_USER_CONFIG_DIR=.config/dconf",
         /* Required for file reveal in file manager */
-        "--socket=session-bus"
+        "--socket=session-bus",
+        "--env=MOZ_PLUGIN_PATH=/app/lib/mozilla/plugins"
+
     ],
     "build-options" : {
         "cflags": "-O2 -g",
@@ -179,10 +177,6 @@
               {
                   "type": "patch",
                   "path": "firefox-pipewire.patch"
-              },
-              {
-                  "type": "patch",
-                  "path": "firefox-extension-dir.patch"
               },
               {
                   "type": "file",

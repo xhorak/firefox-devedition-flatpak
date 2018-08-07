@@ -1,0 +1,58 @@
+{
+    "id": "com.adobe.FlashPlayer.NPAPI",
+    "runtime": "org.mozilla.FirefoxNightly",
+    "build-extension": true,
+    "sdk": "org.freedesktop.Sdk//1.6",
+    "separate-locales": false,
+    "appstream-compose": false,
+    "build-options": {
+        "prefix": "/app/lib/mozilla/plugins/",
+        "env": {
+            "PATH": "/app/lib/mozilla/plugins/bin:/app/bin:/usr/bin"
+        }
+    },
+    "modules": [
+        {
+            "name": "FlashPlayer",
+            "buildsystem": "simple",
+            "build-commands": [
+                "install -Dm755 apply_extra ${FLATPAK_DEST}/apply_extra"
+            ],
+            "sources": [
+                {
+                    "type": "script",
+                    "dest-filename": "apply_extra",
+                    "commands": [
+                        "mkdir -p extra/flash_player",
+                        "tar xvzf extra/flash_player.tar.gz -C extra/flash_player",
+                        "cp extra/flash_player/libflashplayer.so /app/lib/mozilla/plugins",
+                        "rm -rf extra/flash_player extra/flash_player.tar.gz"
+                    ]
+                },
+                {
+                    "type": "extra-data",
+                    "filename": "flash_player.tar.gz",
+                    "url": "https://fpdownload.adobe.com/get/flashplayer/pdc/30.0.0.134/flash_player_npapi_linux.x86_64.tar.gz",
+                    "sha256": "dcd7f22d0891803e347d4ffa017ea9cab590bcc7e5b60309e33b7fe254c9610c",
+                    "size": 9042379
+                }
+            ]
+        },
+        {
+             "name": "appdata",
+             "buildsystem": "simple",
+             "build-commands": [
+                 "mkdir -p ${FLATPAK_DEST}/share/appdata",
+                 "cp com.adobe.FlashPlayer.NPAPI.appdata.xml ${FLATPAK_DEST}/share/appdata",
+                 "appstream-compose  --basename=com.adobe.FlashPlayer.NPAPI --prefix=${FLATPAK_DEST} --origin=flatpak com.adobe.FlashPlayer.NPAPI"
+             ],
+             "sources": [
+                 {
+                     "type": "file",
+                     "path": "com.adobe.FlashPlayer.NPAPI.appdata.xml"
+                 }
+             ]
+         }
+    ]
+}
+

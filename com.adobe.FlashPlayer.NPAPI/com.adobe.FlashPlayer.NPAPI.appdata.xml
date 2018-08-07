@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="runtime">
-  <id>org.mozilla.FirefoxNightly.flashplayer</id>
+  <id>com.adobe.FlashPlayer.NPAPI</id>
   <metadata_license>CC0-1.0</metadata_license>
+  <project_license>Proprietary</project_license>
   <name>Flash Player extension</name>
   <summary>Add support for Adobe Flash Player</summary>
 </component>
