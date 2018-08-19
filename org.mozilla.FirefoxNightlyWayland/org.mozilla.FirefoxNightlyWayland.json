@@ -1,7 +1,7 @@
 {
     "app-id": "org.mozilla.FirefoxNightlyWayland",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "3.24",
+    "runtime-version": "3.28",
     /*"branch" : "nightly",*/
     "sdk": "org.gnome.Sdk",
     "sdk-extensions" : [
