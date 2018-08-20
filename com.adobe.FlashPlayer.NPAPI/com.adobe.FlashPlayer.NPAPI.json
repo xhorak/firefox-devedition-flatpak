@@ -16,17 +16,17 @@
             "name": "FlashPlayer",
             "buildsystem": "simple",
             "build-commands": [
-                "install -Dm755 apply_extra ${FLATPAK_DEST}/apply_extra"
+                "install -Dm755 apply_extra ${FLATPAK_DEST}/bin/apply_extra"
             ],
             "sources": [
                 {
                     "type": "script",
                     "dest-filename": "apply_extra",
                     "commands": [
-                        "mkdir -p extra/flash_player",
-                        "tar xvzf extra/flash_player.tar.gz -C extra/flash_player",
-                        "cp extra/flash_player/libflashplayer.so /app/lib/mozilla/plugins",
-                        "rm -rf extra/flash_player extra/flash_player.tar.gz"
+                        "mkdir -p ${FLATPAK_DEST}/extra/flash_player",
+                        "tar xvzf ${FLATPAK_DEST}/extra/flash_player.tar.gz -C ${FLATPAK_DEST}/extra/flash_player",
+                        "cp ${FLATPAK_DEST}/extra/flash_player/libflashplayer.so /app/lib/mozilla/plugins",
+                        "rm -rf ${FLATPAK_DEST}/extra/flash_player ${FLATPAK_DEST}/extra/flash_player.tar.gz"
                     ]
                 },
                 {
