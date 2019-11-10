@@ -1,8 +1,8 @@
 {
     "app-id": "org.mozilla.FirefoxUpstreamBinary",
-    "runtime": "org.gnome.Platform",
-    "runtime-version": "3.26",
-    "sdk": "org.gnome.Sdk",
+    "runtime":"org.freedesktop.Platform",
+    "runtime-version":"19.08",
+    "sdk":"org.freedesktop.Sdk",
     "command": "firefox",
     /*"tags": [""],*/
     "desktop-file-name-suffix": " Upstream Binary",
@@ -29,6 +29,15 @@
         "--socket=session-bus"
     ],
     "modules": [
+      {
+         "name":"dbus-glib",
+         "sources":[
+            {
+               "type":"git",
+               "url":"https://github.com/freedesktop/dbus-glib.git"
+            }
+         ]
+      },
       {
           "name": "firefox",
           "no-autogen": true,
