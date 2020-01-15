@@ -1,0 +1,64 @@
+---
+
+app-id: org.mozilla.FirefoxUpstreamBinary
+runtime: org.gnome.Platform
+runtime-version: 3.34
+sdk: org.gnome.Sdk
+command: firefox
+desktop-file-name-suffix: ' Upstream Binary'
+rename-desktop-file: org.mozilla.Firefox.desktop
+rename-appdata-file: org.mozilla.Firefox.appdata.xml
+rename-icon: org.mozilla.Firefox
+finish-args:
+  # X11 + XShm access
+  - '--share=ipc'
+  - '--socket=x11'
+  # Wayland access
+  - '--socket=wayland'
+  # Needs to talk to the network
+  - '--share=network'
+  # Enable playing sound thru pulseaudio
+  - '--socket=pulseaudio'
+  # Keep user profile after application exit
+  - "--persist=.mozilla"
+  # Allow access to Download folder
+  - "--filesystem=xdg-download:rw"
+  # Enable access to dri
+  - '--device=dri'
+  # Required for file reveal in file manager
+  - "--talk-name=org.freedesktop.FileManager1"
+  # For geolocation purposes (to get list of nearby wifi networks)
+  - "--system-talk-name=org.freedesktop.NetworkManager"
+  # Accessibility support
+  - "--talk-name=org.a11y.Bus"
+  # Native notifications
+  - "--talk-name=org.freedesktop.Notifications"
+  # Enable kerberos support
+  -  "--filesystem=/run/.heim_org.h5l.kcm-socket"
+  # For screenshot inhibiting
+  - "--talk-name=org.gnome.SessionManager"
+  - "--talk-name=org.freedesktop.ScreenSaver"
+modules:
+  - ../common/shared-modules/dbus-glib/dbus-glib-0.110.json
+  - name: firefox
+    no-autogen: true
+    make-install-args:
+      - prefix=/app
+    sources:
+      - type: archive
+        url: $FIREFOX_BINARY_URL
+        sha256: $FIREFOX_BINARY_CHECKSUM
+        dest: firefox
+      - type: file
+        path: build-makefile
+        dest-filename: Makefile
+$LANGPACKS
+      - type: file
+        path: org.mozilla.Firefox.appdata.xml
+      - type: file
+        path: org.mozilla.Firefox.desktop
+      - type: file
+        path: distribution.ini
+      - type: file
+        path: default-preferences.js
+
