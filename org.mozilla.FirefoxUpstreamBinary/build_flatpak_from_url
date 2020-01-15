@@ -1,50 +1,71 @@
 #!/bin/bash
-set -x
-PACKAGE_NAME=org.mozilla.FirefoxUpstreamBinary
+set -xeuo pipefail
 
-MANIFEST_FILE_TEMPLATE=$PACKAGE_NAME.json.template
-MANIFEST_FILE=$PACKAGE_NAME.json
-
-if [ -z $1 ]; then
+if [ -z ${1:-} ]; then
   echo "Usage: $0 URL"
   echo ""
-  echo "Example: $0 https://archive.mozilla.org/pub/firefox/candidates/57.0b9-candidates/build1/linux-x86_64/en-US/firefox-57.0b9.tar.bz2"
+  echo "Example: $0 https://archive.mozilla.org/pub/firefox/releases/73.0b4/linux-x86_64/en-US/firefox-73.0b4.tar.bz2"
   exit 1
 fi
 
-BINARY=$1
-BUILD_DIR_URL=`echo $BINARY | sed -e 's|\(build[0-9]\).*|\1|'`
-BUILD_FILE_WITH_PATH=`echo $BINARY | sed -e "s|.*build[0-9]\+/||"`
+FIREFOX_BINARY_URL=${1}
+PACKAGE_NAME=org.mozilla.FirefoxUpstreamBinary
+MANIFEST_FILE_TEMPLATE=${PACKAGE_NAME}.yml.template
+MANIFEST_FILE=${PACKAGE_NAME}.yml
 
-CHECKSUM=`curl $BUILD_DIR_URL/SHA256SUMS|grep $BUILD_FILE_WITH_PATH | cut -d\  -f1`
+case ${FIREFOX_BINARY_URL} in
+  *"/releases/"*)
+    # URL format
+    # https://ftp.mozilla.org/pub/firefox/releases/72.0.1/linux-x86_64/en-US/firefox-72.0.1.tar.bz2
+    # https://ftp.mozilla.org/pub/firefox/releases/72.0.1/linux-x86_64/xpi/en-US.xpi
+    # https://ftp.mozilla.org/pub/firefox/releases/72.0.1/SHA256SUMS
 
-export FIREFOX_BINARY_URL=$BINARY
-export FIREFOX_BINARY_CHECKSUM=$CHECKSUM
+    # https://ftp.mozilla.org/pub/firefox/releases/72.0.1/
+    BUILD_DIR_URL=`echo ${FIREFOX_BINARY_URL} | sed -e 's|\(releases/[^/]*\)/.*|\1|'`
+    # linux-x86_64/en-US/firefox-72.0.1.tar.bz2
+    BUILD_FILE_WITH_PATH=`echo ${FIREFOX_BINARY_URL} | sed -e 's|.*releases/[^/]*/||'`
+    ;;
+  *"/candidate/"*)
+    # URL format
+    # https://ftp.mozilla.org/pub/firefox/candidates/73.0b4-candidates/build1/linux-x86_64/en-US/firefox-73.0b4.tar.bz2
+    # https://ftp.mozilla.org/pub/firefox/candidates/73.0b4-candidates/build1/linux-x86_64/xpi/en-US.xpi
+    # https://ftp.mozilla.org/pub/firefox/candidates/73.0b4-candidates/build1/SHA256SUMS
+
+    # https://ftp.mozilla.org/pub/firefox/candidates/73.0b4-candidates/build1
+    BUILD_DIR_URL=`echo ${FIREFOX_BINARY_URL} | sed -e 's|\(build[0-9]\).*|\1|'`
+    # linux-x86_64/en-US/firefox-73.0b4.tar.bz2
+    BUILD_FILE_WITH_PATH=`echo ${FIREFOX_BINARY_URL} | sed -e "s|.*build[0-9]\+/||"`
+    ;;
+  *"/nightly/"*)
+    echo "nightly does not publish sha256sum, and currently not supported."
+    exit 1
+    ;;
+  *)
+    echo "URL format not know. aborting "
+    exit 1
+    ;;
+esac
+FIREFOX_BINARY_CHECKSUM=`curl ${BUILD_DIR_URL}/SHA256SUMS|grep ${BUILD_FILE_WITH_PATH} | cut -d' ' -f1`
 
 mkdir -p langpacks
 cd langpacks
-
-wget -nd -np --recursive --level=0 $BUILD_DIR_URL/linux-x86_64/xpi/
-BUILD_DIR_URL=https://archive.mozilla.org/pub/firefox/candidates/57.0b9-candidates/build1
-for l in $(ls *.xpi)
+wget -nd -np --recursive --level=0 -c ${BUILD_DIR_URL}/linux-x86_64/xpi/
+for LANGPACK_FILE in $(ls *.xpi)
 do
-LOCALE=`basename -s .xpi $l`
-LANGPACKS="$LANGPACKS
-              {
-                  'type': 'file',
-                  'path': 'langpacks/$l',
-                  'dest': 'langpacks/',
-                  'dest-filename': 'langpack-$LOCALE@firefox.mozilla.org.xpi'
-              },"
+  LOCALE=`basename -s .xpi ${LANGPACK_FILE}`
+  LANGPACKS="${LANGPACKS:-}
+      - type: file
+        path: langpacks/${LANGPACK_FILE}
+        dest: langpacks/
+        dest-filename: langpack-${LOCALE}@firefox.mozilla.org.xpi"
 done
 cd -
 
-export LANGPACKS
-
+export FIREFOX_BINARY_URL FIREFOX_BINARY_CHECKSUM LANGPACKS
 cat $MANIFEST_FILE_TEMPLATE | envsubst > $MANIFEST_FILE
 
-rm -rf app repo
-flatpak-builder --disable-cache --repo=repo app $MANIFEST_FILE
-flatpak build-bundle repo $PACKAGE_NAME.flatpak $PACKAGE_NAME
-# Cleanup downloaded langpacks
-rm -rf langpacks
+flatpak-builder --disable-cache --repo=repo --force-clean app $MANIFEST_FILE
+flatpak build-bundle repo ${PACKAGE_NAME}.flatpak ${PACKAGE_NAME}
+
+# Cleanup downloaded langpacks and stuff
+rm -rf langpacks app repo
