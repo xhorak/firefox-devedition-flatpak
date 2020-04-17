@@ -50,7 +50,7 @@ MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xm
 StartupNotify=true
 Categories=Network;WebBrowser;
 Keywords=web;browser;internet;
-Actions=new-window;new-private-window;
+Actions=new-window;new-private-window;profilemanager;
 
 [Desktop Action new-window]
 Name=Open a New Window
@@ -59,4 +59,8 @@ Exec=firefox %u
 [Desktop Action new-private-window]
 Name=Open a New Private Window
 Exec=firefox --private-window %u
+
+[Desktop Action profilemanager]
+Name=Open the Profile Manager
+Exec=firefox --ProfileManager %u
 
