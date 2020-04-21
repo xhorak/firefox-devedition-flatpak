@@ -9,7 +9,8 @@ if [ -z $1 ]; then
   echo "  $0 org.mozilla.FirefoxDevEdition"
   exit 1
 else
-  APP_NAME=$1
+  # Delete trailing slash from directory command line completion, if present.
+  APP_NAME=${1%/}
 fi
 
 # Append Cargo bin directory to PATH, considering CARGO_HOME if set.
