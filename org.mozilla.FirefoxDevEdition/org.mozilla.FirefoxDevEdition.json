@@ -120,8 +120,8 @@
             "sources": [
                 {
                     "type": "archive",
-                    "url": "https://static.rust-lang.org/dist/rust-1.42.0-x86_64-unknown-linux-gnu.tar.gz",
-                    "sha256": "7d1e07ad9c8a33d8d039def7c0a131c5917aa3ea0af3d0cc399c6faf7b789052"
+                    "url": "https://static.rust-lang.org/dist/rust-1.44.1-x86_64-unknown-linux-gnu.tar.gz",
+                    "sha256": "a41df89a461a580536aeb42755e43037556fba2e527dd13a1e1bb0749de28202"
                 },
                 {
                     "type": "script",
