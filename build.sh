@@ -23,7 +23,7 @@ if [ -f $APP_NAME/prepare_sources ]; then
   else
     echo "Preparing sources failed: sources are required to start build of the package..."
     echo "Check above output for failure."
-    #exit 1
+    exit 1
   fi
   cd -
 fi
