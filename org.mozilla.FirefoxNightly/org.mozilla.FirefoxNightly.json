@@ -186,8 +186,8 @@
             "buildsystem": "simple",
             "build-commands": [
                 "env CARGO_HOME=.cargo cargo install cbindgen",
-                "env PATH=/run/build/firefox/.cargo/bin:$PATH RUST_LOG=debug ./mach build -v -j4",
-                "env prefix=/app make install"
+                "env PATH=/run/build/firefox/.cargo/bin:$PATH RUST_LOG=debug MACH_USE_SYSTEM_PYTHON=1 ./mach build -v -j4",
+                "env MACH_USE_SYSTEM_PYTHON=1 prefix=/app make install"
             ],
             "make-install-args": ["prefix=/app"],
             "sources": [
